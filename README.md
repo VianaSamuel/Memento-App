@@ -17,12 +17,12 @@
 Repositório: [https://github.com/VianaSamuel/Memento-App/](https://github.com/VianaSamuel/Memento-App/)
 
 ## Proposta de Desenvolvimento
-### Objetivo
+### - Objetivo
 o que é e para que serve o app
-### Público-Alvo
+### - Público-Alvo
 quem irá se beneficiar com a utilização do app
-### Principais Funcionalidades
+### - Principais Funcionalidades
 - funcionalidade
 - funcionalidade
-### Protótipo das Telas
+### - Protótipo das Telas
 (imagens)
