@@ -1,4 +1,11 @@
-# Memento-App
+<div align="center">
+ 
+# Memento App
+### Trabalho realizado no 4º período da faculdade.
+<br>
+ <img src="https://placehold.co/250" height="250"/>
+ 
+</div>
 
 ## Equipe
 - Henrique de Almeida Diniz ***(função)***
