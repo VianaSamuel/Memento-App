@@ -11,8 +11,7 @@
 - Henrique de Almeida Diniz ***(função)***
 - Leandro Guido Lorenzini Santos ***(função)***
 - Marcelo Augusto Moreira Gomes ***(função)***
-- Samuel Luiz da Cunha Viana Cruz ***(função)***
-<br>
+- Samuel Luiz da Cunha Viana Cruz ***(versionamento, design)***
 <br>
 
 ## Links
