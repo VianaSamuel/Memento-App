@@ -8,10 +8,10 @@
 </div>
 
 ## Equipe
-- Henrique de Almeida Diniz ***(função)***
-- Leandro Guido Lorenzini Santos ***(função)***
-- Marcelo Augusto Moreira Gomes ***(função)***
-- Samuel Luiz da Cunha Viana Cruz ***(versionamento, design)***
+- Henrique de Almeida Diniz<br>*(função)*<br>
+- Leandro Guido Lorenzini Santos<br>*(função)*<br>
+- Marcelo Augusto Moreira Gomes<br>*(função)*<br>
+- Samuel Luiz da Cunha Viana Cruz<br>*(versionamento, design)*
 <br>
 
 ## Links
