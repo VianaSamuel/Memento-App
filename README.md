@@ -12,6 +12,7 @@
 - Leandro Guido Lorenzini Santos<br> *(função)*<br><br>
 - Marcelo Augusto Moreira Gomes<br> *(função)*<br><br>
 - Samuel Luiz da Cunha Viana Cruz<br>*(versionamento, design)*
+<br>
 
 ## Links
 Repositório: [https://github.com/VianaSamuel/Memento-App/](https://github.com/VianaSamuel/Memento-App/)
