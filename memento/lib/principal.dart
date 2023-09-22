@@ -1,80 +1,70 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
 
 class principal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: CadastroPage(),
+      home: NotesPage(),
       theme:
-          ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 213, 21, 190))),
+          ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)),
     );
   }
 }
 
-class CadastroPage extends StatefulWidget {
+class NotesPage extends StatefulWidget {
   @override
-  _CadastroPageState createState() => _CadastroPageState();
+  _NotesPageState createState() => _NotesPageState();
 }
 
-class _CadastroPageState extends State<CadastroPage> {
-  TextEditingController _nomeController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _senhaController = TextEditingController();
+class _NotesPageState extends State<NotesPage> {
+  TextEditingController _noteController = TextEditingController();
+  List<String> notes = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cadastro'),
+        title: Text('Anotações Pessoais'),
       ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                controller: _nomeController,
-                decoration: InputDecoration(
-                  labelText: 'Nome',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: _senhaController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Implemente aqui a lógica de cadastro
-                  String nome = _nomeController.text;
-                  String email = _emailController.text;
-                  String senha = _senhaController.text;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginApp()),
-                  );
-                  // Aqui você pode salvar os dados do novo usuário ou realizar qualquer outra ação necessária.
-                  // Por exemplo, você pode exibir uma mensagem de sucesso ou redirecionar o usuário para a tela de login.
-                },
-                child: Text('Cadastrar'),
-              ),
-            ],
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              itemCount: notes.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(notes[index]),
+                );
+              },
+            ),
           ),
-        ),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: TextFormField(
+              controller: _noteController,
+              decoration: InputDecoration(
+                labelText: 'Nova Anotação',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    _addNote();
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  void _addNote() {
+    String newNote = _noteController.text;
+    if (newNote.isNotEmpty) {
+      setState(() {
+        notes.add(newNote);
+        _noteController.clear();
+      });
+    }
   }
 }

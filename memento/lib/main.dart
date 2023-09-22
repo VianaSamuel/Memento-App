@@ -1,4 +1,6 @@
 import 'dart:html';
+import 'package:memento/sobre.dart';
+
 import 'cadastro.dart';
 import 'principal.dart';
 
@@ -40,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              SizedBox(height: 150.0),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -63,13 +66,8 @@ class _LoginPageState extends State<LoginPage> {
                   // Adicione a lógica de autenticação aqui
                   // Você pode acessar os valores de email e senha usando _emailController.text e _passwordController.text
                 },
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(
-                      255, 0, 0, 0), // Defina a cor de fundo do botão aqui
-                ),
                 child: Text('Entrar'),
               ),
-              SizedBox(height: 8.0),
               TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -80,6 +78,18 @@ class _LoginPageState extends State<LoginPage> {
                   // Implemente esta função de acordo com a navegação desejada
                 },
                 child: Text('Cadastrar'),
+              ),
+              SizedBox(height: 274.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => sobre()),
+                  );
+                  // Adicione a lógica de autenticação aqui
+                  // Você pode acessar os valores de email e senha usando _emailController.text e _passwordController.text
+                },
+                child: Text('Sobre'),
               ),
             ],
           ),

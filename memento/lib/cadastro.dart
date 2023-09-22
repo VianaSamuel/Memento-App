@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memento/principal.dart';
 import 'main.dart';
 
 class cadastro extends StatelessWidget {
@@ -6,6 +7,8 @@ class cadastro extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: CadastroPage(),
+      theme:
+          ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)),
     );
   }
 }
@@ -54,20 +57,42 @@ class _CadastroPageState extends State<CadastroPage> {
                 ),
               ),
               SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Implemente aqui a lógica de cadastro
-                  String nome = _nomeController.text;
-                  String email = _emailController.text;
-                  String senha = _senhaController.text;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginApp()),
-                  );
-                  // Aqui você pode salvar os dados do novo usuário ou realizar qualquer outra ação necessária.
-                  // Por exemplo, você pode exibir uma mensagem de sucesso ou redirecionar o usuário para a tela de login.
-                },
-                child: Text('Cadastrar'),
+              TextFormField(
+                controller: _senhaController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Confirmar Senha',
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment
+                    .spaceEvenly, // Coloca os botões espaçados igualmente
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginApp()),
+                      );
+                      // Implemente a lógica para o primeiro botão aqui
+                    },
+                    child: Text('Voltar'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      String nome = _nomeController.text;
+                      String email = _emailController.text;
+                      String senha = _senhaController.text;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => principal()),
+                      );
+                      // Implemente a lógica para o segundo botão aqui
+                    },
+                    child: Text('Cadastrar'),
+                  ),
+                ],
               ),
             ],
           ),
