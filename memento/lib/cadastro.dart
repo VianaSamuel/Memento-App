@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:memento/principal.dart';
 import 'main.dart';
@@ -23,6 +22,7 @@ class _CadastroPageState extends State<CadastroPage> {
   TextEditingController _nomeController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _senhaController = TextEditingController();
+  TextEditingController _senhaController2 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _CadastroPageState extends State<CadastroPage> {
               ),
               SizedBox(height: 16.0),
               TextFormField(
-                controller: _senhaController,
+                controller: _senhaController2,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Confirmar Senha',
@@ -74,7 +74,7 @@ class _CadastroPageState extends State<CadastroPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginApp()),
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                       // Implemente a lógica para o primeiro botão aqui
                     },

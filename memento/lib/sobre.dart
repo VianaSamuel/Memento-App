@@ -43,7 +43,7 @@ class SobrePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginApp()),
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
               child: Text('Voltar'),
