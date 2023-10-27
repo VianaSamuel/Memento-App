@@ -8,112 +8,119 @@ class CadastroPage extends StatefulWidget {
 }
 
 class _CadastroPageState extends State<CadastroPage> {
-  String email = '';
-  String nome = '';
-  String senha = '';
-
+  final TextEditingController _emailTextEditingController = TextEditingController();
+  final TextEditingController _passwordTextEditingController = TextEditingController();
+  final TextEditingController _nameTextEditingController = TextEditingController();
+  // se for salvar o endereco -> final TextEditingController _enderecoTextEditingController = TextEditingController();
+  
   Widget _body() {
-    return Column(
-      children: [
-        SingleChildScrollView(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        //width: 100,
-                        //height: 100,
-                        child: //Image.asset('assets/images/logo.png'), //Declarar no pubspec
-                            Image.network(
-                                'https://www.google.com/url?sa=i&url=https%3A%2F%2Flogo.com%2F&psig=AOvVaw2aWhxoh-LSIq0_rSsUUQYb&ust=1698437261885000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJDujP7BlIIDFQAAAAAdAAAAABAE')),
-                    Container(height: 20),
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          children: [
-                            TextField(
-                              onChanged: (text) {
-                                nome = text;
-                              },
-                              obscureText: true,
-                              decoration: const InputDecoration(
-                                  labelText: 'Nome',
-                                  border: OutlineInputBorder()),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              onChanged: (text) {
-                                email = text;
-                              },
-                              keyboardType: TextInputType
-                                  .emailAddress, //para o teclado ser do tipo que e usado para email
-                              decoration: const InputDecoration(
-                                  labelText: 'Email',
-                                  border: OutlineInputBorder()),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    onChanged: (text) {},
-                                    obscureText: true,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Endereço',
-                                        border: OutlineInputBorder()),
-                                  ),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Image.network(
+                      'https://www.google.com/url?sa=i&url=https%3A%2F%2Flogo.com%2F&psig=AOvVaw2aWhxoh-LSIq0_rSsUUQYb&ust=1698437261885000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJDujP7BlIIDFQAAAAAdAAAAABAE'),
+                  Container(height: 20),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _nameTextEditingController,
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                                labelText: 'Nome',
+                                border: OutlineInputBorder()),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: _emailTextEditingController,
+                            keyboardType: TextInputType
+                                .emailAddress, //para o teclado ser do tipo que e usado para email
+                            decoration: const InputDecoration(
+                                labelText: 'Email',
+                                border: OutlineInputBorder()),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  onChanged: (text) {},
+                                  obscureText: true,
+                                  decoration: const InputDecoration(
+                                      labelText: 'Endereço',
+                                      border: OutlineInputBorder()),
                                 ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: TextField(
-                                    onChanged: (text) {},
-                                    obscureText: true,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Endereço',
-                                        border: OutlineInputBorder()),
-                                  ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: TextField(
+                                  onChanged: (text) {},
+                                  obscureText: true,
+                                  decoration: const InputDecoration(
+                                      labelText: 'Endereço',
+                                      border: OutlineInputBorder()),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              onChanged: (text) {
-                                senha = text;
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: _passwordTextEditingController,
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                                labelText: 'Senha',
+                                border: OutlineInputBorder()),
+                          ),
+                          const SizedBox(height: 15),
+                          ElevatedButton(
+                              //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushReplacementNamed('/notes');
                               },
-                              obscureText: true,
-                              decoration: const InputDecoration(
-                                  labelText: 'Senha',
-                                  border: OutlineInputBorder()),
-                            ),
-                            const SizedBox(height: 15),
-                            ElevatedButton(
-                                //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('/home');
+                              child: Container(
+                                  width: double
+                                      .infinity, //Para o botao preencher toda a largura
+                                  child: const Text(
+                                    'Cadastrar',
+                                    textAlign: TextAlign.center,
+                                  ))),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Text('Já tem uma conta? '),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushReplacementNamed(
+                                      '/login'); // Ação a ser realizada quando o botão é clicado
                                 },
-                                child: Container(
-                                    width: double
-                                        .infinity, //Para o botao preencher toda a largura
-                                    child: const Text(
-                                      'Cadastrar',
-                                      textAlign: TextAlign.center,
-                                    ))),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
+                                child: Text(
+                                  'Clique aqui para logar',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                  ]),
-            ),
+                  ),
+                ]),
           ),
         ),
-      ],
+      ),
     );
   }
 

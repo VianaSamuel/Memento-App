@@ -4,6 +4,7 @@ import 'package:memento/cadastro_page.dart';
 import 'package:memento/home_page.dart';
 import 'package:memento/login_page.dart';
 import 'package:memento/sobre_page.dart';
+import 'package:memento/notes_page.dart';
 
 class AppWidget extends StatelessWidget {
   @override
@@ -19,11 +20,12 @@ class AppWidget extends StatelessWidget {
                   ? Brightness.dark
                   : Brightness.light,
             ),
-            initialRoute: '/',
+            initialRoute: '/home',
             routes: {
-              '/': (context) => const LoginPage(),
+              '/login': (context) => const LoginPage(),
               '/cadastro': (context) => const CadastroPage(),
               '/home': (context) => HomePage(),
+              '/notes': (context) => NotesPage(),
               '/sobre': (context) => SobrePage(),
             },
           );
