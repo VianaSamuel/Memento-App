@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:memento/main.dart';
+import 'package:memento/login_page.dart';
 
 class sobre extends StatelessWidget {
   @override
