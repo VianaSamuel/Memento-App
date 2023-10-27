@@ -9,81 +9,107 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  int counter = 0;
+  final TextEditingController _conteudoTextEditingController =
+      TextEditingController();
+  List<String> texts = [];
+  int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-          child: Column(
-        children: [
-          UserAccountsDrawerHeader(
-            currentAccountPicture: ClipRRect(
-              borderRadius: BorderRadius.circular(40),
-              child: Image.asset('assets/images/logo.pn'),
-            ),
-            accountName: Text('Marcelo Moreira'),
-            accountEmail: Text('@gmail.com'),
-          ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Inicio'),
-            subtitle: Text('tela de inicio'),
-            onTap: () {
-              print('Home');
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Sair'),
-            subtitle: Text('Finalizar sessao'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: CustomSwitch(),
-          ),
-        ],
-      )),
-      appBar: AppBar(
-        title: Text('HomePage'),
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: ListView(
-          //scrollDirection: Axis.horizontal, //muda o scroll para vertical
-          children: [
-            Column(children: [
-              Text('Contador: $counter'),
-            ]),
-            Container(height: 10),
-            Container(
-              height: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  color: Colors.black,
+        child: Scaffold(
+          body: Column(
+            children: [
+              UserAccountsDrawerHeader(
+                currentAccountPicture: ClipRRect(
+                  borderRadius: BorderRadius.circular(40),
+                  child: Image.asset('assets/images/logo.pn'),
                 ),
-              ],
-            )
-          ],
+                accountName: const Text('Marcelo Moreira'),
+                accountEmail: const Text('@gmail.com'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Inicio'),
+                subtitle: const Text('tela de inicio'),
+                onTap: () {
+                  print('Home');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.groups),
+                title: const Text('Sobre nos'),
+                onTap: () {
+                  Navigator.of(context).pushReplacementNamed('/sobre');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.exit_to_app),
+                title: const Text('Sair'),
+                subtitle: const Text('Finalizar sessao'),
+                onTap: () {
+                  Navigator.of(context).pushReplacementNamed('/');
+                },
+              ),
+            ],
+          ),
+          bottomNavigationBar:
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 15),
+              child: Text('Modo noturno: '),
+            ),
+            CustomSwitch(),
+          ]),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          setState(() {
-            counter++;
-          });
-        },
+      appBar: AppBar(
+        title: const Text('HomePage'),
+      ),
+      body: Container(
+        child: ListView.builder(
+          itemCount: texts.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              selected: index == _selectedIndex,
+              title: Text(texts[index]),
+              onLongPress: () {
+                _selectedIndex = index;
+                print("selecionou $index");
+              },
+              onTap: () {},
+            );
+          },
+        ),
+      ),
+      floatingActionButton: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30),
+              child: TextField(
+                decoration: const InputDecoration(
+                    labelText: 'Seu Texto',
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black))),
+                controller: _conteudoTextEditingController,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              setState(() {
+                texts.add(_conteudoTextEditingController.text);
+                _conteudoTextEditingController.clear();
+              });
+            },
+          ),
+        ],
       ),
     );
   }

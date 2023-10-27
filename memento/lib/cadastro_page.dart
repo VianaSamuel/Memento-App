@@ -9,7 +9,8 @@ class CadastroPage extends StatefulWidget {
 
 class _CadastroPageState extends State<CadastroPage> {
   String email = '';
-  String password = '';
+  String nome = '';
+  String senha = '';
 
   Widget _body() {
     return Column(
@@ -19,7 +20,7 @@ class _CadastroPageState extends State<CadastroPage> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -36,42 +37,60 @@ class _CadastroPageState extends State<CadastroPage> {
                         child: Column(
                           children: [
                             TextField(
-                              onChanged: (text) {},
+                              onChanged: (text) {
+                                nome = text;
+                              },
                               obscureText: true,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   labelText: 'Nome',
                                   border: OutlineInputBorder()),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             TextField(
                               onChanged: (text) {
                                 email = text;
                               },
                               keyboardType: TextInputType
                                   .emailAddress, //para o teclado ser do tipo que e usado para email
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   labelText: 'Email',
                                   border: OutlineInputBorder()),
                             ),
-                            SizedBox(height: 10),
-                            TextField(
-                              onChanged: (text) {},
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                  labelText: 'Endereço',
-                                  border: OutlineInputBorder()),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: (text) {},
+                                    obscureText: true,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Endereço',
+                                        border: OutlineInputBorder()),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: (text) {},
+                                    obscureText: true,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Endereço',
+                                        border: OutlineInputBorder()),
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             TextField(
                               onChanged: (text) {
-                                password = text;
+                                senha = text;
                               },
                               obscureText: true,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   labelText: 'Senha',
                                   border: OutlineInputBorder()),
                             ),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
                             ElevatedButton(
                                 //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
                                 onPressed: () {
@@ -81,11 +100,11 @@ class _CadastroPageState extends State<CadastroPage> {
                                 child: Container(
                                     width: double
                                         .infinity, //Para o botao preencher toda a largura
-                                    child: Text(
+                                    child: const Text(
                                       'Cadastrar',
                                       textAlign: TextAlign.center,
                                     ))),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),

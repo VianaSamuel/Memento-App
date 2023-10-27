@@ -3,6 +3,7 @@ import 'package:memento/app_controller.dart';
 import 'package:memento/cadastro_page.dart';
 import 'package:memento/home_page.dart';
 import 'package:memento/login_page.dart';
+import 'package:memento/sobre_page.dart';
 
 class AppWidget extends StatelessWidget {
   @override
@@ -13,16 +14,17 @@ class AppWidget extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              primarySwatch: Colors.red,
+              primarySwatch: Colors.grey,
               brightness: AppControler.instance.isDartTheme
                   ? Brightness.dark
                   : Brightness.light,
             ),
             initialRoute: '/',
             routes: {
-              '/': (context) => LoginPage(),
-              '/cadastro': (context) => CadastroPage(),
-              '/home': (context) => HomePage()
+              '/': (context) => const LoginPage(),
+              '/cadastro': (context) => const CadastroPage(),
+              '/home': (context) => HomePage(),
+              '/sobre': (context) => SobrePage(),
             },
           );
         });

@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -41,21 +41,21 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               keyboardType: TextInputType
                                   .emailAddress, //para o teclado ser do tipo que e usado para email
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   labelText: 'Email',
                                   border: OutlineInputBorder()),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             TextField(
                               onChanged: (text) {
                                 password = text;
                               },
                               obscureText: true,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   labelText: 'Password',
                                   border: OutlineInputBorder()),
                             ),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
                             ElevatedButton(
                                 //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
                                 onPressed: () {
@@ -65,24 +65,25 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Container(
                                     width: double
                                         .infinity, //Para o botao preencher toda a largura
-                                    child: Text(
+                                    child: const Text(
                                       'Entrar',
                                       textAlign: TextAlign.center,
                                     ))),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
-                                Text('Nao tem uma conta? '),
+                                const Text('Nao tem uma conta? '),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.of(context).pushReplacementNamed(
                                         '/cadastro'); // Ação a ser realizada quando o botão é clicado
                                   },
                                   child: Text(
-                                    'inscreva-se aqui',
+                                    'Inscreva-se aqui',
                                     style: TextStyle(
                                       fontSize: 16.0,
-                                      color: Colors.red,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                 ),
