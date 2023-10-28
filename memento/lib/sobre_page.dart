@@ -41,10 +41,7 @@ class SobrePage extends StatelessWidget {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
+                Navigator.of(context).pushReplacementNamed('/notes');
               },
               child: Text('Voltar'),
             ),

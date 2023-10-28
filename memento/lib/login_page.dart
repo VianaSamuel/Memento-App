@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:memento/sql_helper.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  static Map<String, dynamic> usuario = Map<String, dynamic>();
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailTextEditingController = TextEditingController();
-  final TextEditingController _passwordTextEditingController = TextEditingController();
-
+  final TextEditingController _emailTextEditingController =
+      TextEditingController();
+  final TextEditingController _passwordTextEditingController =
+      TextEditingController();
+  
   Widget _body() {
     return Scaffold(
       body: Padding(
@@ -21,8 +26,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Image.network(
-                      'https://www.google.com/url?sa=i&url=https%3A%2F%2Flogo.com%2F&psig=AOvVaw2aWhxoh-LSIq0_rSsUUQYb&ust=1698437261885000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJDujP7BlIIDFQAAAAAdAAAAABAE'),
+                  //Image.network('https://www.google.com/url?sa=i&url=https%3A%2F%2Flogo.com%2F&psig=AOvVaw2aWhxoh-LSIq0_rSsUUQYb&ust=1698437261885000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJDujP7BlIIDFQAAAAAdAAAAABAE'),
                   Container(height: 20),
                   Card(
                     child: Padding(
@@ -48,9 +52,31 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 15),
                           ElevatedButton(
                               //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushReplacementNamed('/notes');
+                              onPressed: () async {
+                                final data =
+                                    await SQLHelper.pegaUmUsuarioPeloEmail(
+                                        _emailTextEditingController.text);
+                                if (data.length == 0) {
+                                  showAlertDialog(
+                                      context,
+                                      "Usuário não encontrado",
+                                      "Nenhum usuario com esse email, tente novamente.");
+                                } else if (data.length == 1) {
+                                  if(data[0]['senha'] == _passwordTextEditingController.text) {
+                                      LoginPage.usuario = data[0];
+                                      Navigator.of(context).pushReplacementNamed(
+                                      '/notes');
+                                  } else {
+                                    showAlertDialog(
+                                      context,
+                                      "Senha incorreta",
+                                      "Tente novamente.");
+                                  }
+                                } else {
+                                  throw Exception(
+                                      "Mais de um usuario com o mesmo email");
+                                }
+                                //Navigator.of(context).pushReplacementNamed('/notes');
                               },
                               child: Container(
                                   width: double
@@ -100,4 +126,31 @@ class _LoginPageState extends State<LoginPage> {
       ],
     ));
   }
+}
+
+showAlertDialog(BuildContext context, String titulo, String content) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: const Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(titulo),
+    content: Text(content),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

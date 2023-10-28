@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memento/app_controller.dart';
+import 'package:memento/login_page.dart';
 
 class NotesPage extends StatefulWidget {
   @override
@@ -9,6 +10,8 @@ class NotesPage extends StatefulWidget {
 }
 
 class NotesPageState extends State<NotesPage> {
+  
+
   final TextEditingController _conteudoTextEditingController =
       TextEditingController();
   List<String> texts = [];
@@ -24,10 +27,10 @@ class NotesPageState extends State<NotesPage> {
               UserAccountsDrawerHeader(
                 currentAccountPicture: ClipRRect(
                   borderRadius: BorderRadius.circular(40),
-                  child: Image.asset('assets/images/logo.pn'),
+                  child: const Icon(Icons.person),
                 ),
-                accountName: const Text('Marcelo Moreira'),
-                accountEmail: const Text('@gmail.com'),
+                accountName: Text(LoginPage.usuario['nome']),
+                accountEmail: Text(LoginPage.usuario['email']),
               ),
               ListTile(
                 leading: const Icon(Icons.home),
