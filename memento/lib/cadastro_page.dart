@@ -27,8 +27,12 @@ class _CadastroPageState extends State<CadastroPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  Image.asset(
+                    'assets/images/Logo.jpg',
+                    width: 200,
+                    height: 200,
+                  ),
                   //Image.network('https://www.google.com/url?sa=i&url=https%3A%2F%2Flogo.com%2F&psig=AOvVaw2aWhxoh-LSIq0_rSsUUQYb&ust=1698437261885000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJDujP7BlIIDFQAAAAAdAAAAABAE'),
-                  Container(height: 20),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -90,7 +94,8 @@ class _CadastroPageState extends State<CadastroPage> {
                                 int id = await _adicionaUsuario();
                                 print(id);
                                 if (id == -1) {
-                                  showAlertDialog(context, "Erro ao criar", "tente novamente");
+                                  showAlertDialog(context, "Erro ao criar",
+                                      "tente novamente");
                                 } else {
                                   Navigator.of(context)
                                       .pushReplacementNamed('/login');
@@ -149,8 +154,16 @@ class _CadastroPageState extends State<CadastroPage> {
   }
 
   Future<int> _adicionaUsuario() async {
-    int id = await SQLHelper.adicionarUsuario(_nameTextEditingController.text,
-        _emailTextEditingController.text, _passwordTextEditingController.text);
+    String? nome = (_nameTextEditingController.text.isEmpty)
+        ? null
+        : _nameTextEditingController.text;
+    String? email = (_emailTextEditingController.text.isEmpty)
+        ? null
+        : _emailTextEditingController.text;
+    String? senha = (_passwordTextEditingController.text.isEmpty)
+        ? null
+        : _passwordTextEditingController.text;
+    int id = await SQLHelper.adicionarUsuario(nome, email, senha);
     return id;
   }
 

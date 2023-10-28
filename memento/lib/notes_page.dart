@@ -10,8 +10,6 @@ class NotesPage extends StatefulWidget {
 }
 
 class NotesPageState extends State<NotesPage> {
-  
-
   final TextEditingController _conteudoTextEditingController =
       TextEditingController();
   List<String> texts = [];
@@ -69,7 +67,11 @@ class NotesPageState extends State<NotesPage> {
         ),
       ),
       appBar: AppBar(
-        title: const Text('NotesPage'),
+        title: const Row(
+          children: [
+            Text('NotesPage'),
+          ],
+        ),
       ),
       body: Container(
         child: ListView.builder(
