@@ -15,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
       TextEditingController();
   final TextEditingController _passwordTextEditingController =
       TextEditingController();
-  
+
   Widget _body() {
     return Scaffold(
       body: Padding(
@@ -26,8 +26,9 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  //Image.network('https://www.google.com/url?sa=i&url=https%3A%2F%2Flogo.com%2F&psig=AOvVaw2aWhxoh-LSIq0_rSsUUQYb&ust=1698437261885000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJDujP7BlIIDFQAAAAAdAAAAABAE'),
-                  Container(height: 20),
+                  Image.asset(
+                    'assets/images/Logo.jpg',
+                  ),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -62,15 +63,14 @@ class _LoginPageState extends State<LoginPage> {
                                       "Usuário não encontrado",
                                       "Nenhum usuario com esse email, tente novamente.");
                                 } else if (data.length == 1) {
-                                  if(data[0]['senha'] == _passwordTextEditingController.text) {
-                                      LoginPage.usuario = data[0];
-                                      Navigator.of(context).pushReplacementNamed(
-                                      '/notes');
+                                  if (data[0]['senha'] ==
+                                      _passwordTextEditingController.text) {
+                                    LoginPage.usuario = data[0];
+                                    Navigator.of(context)
+                                        .pushReplacementNamed('/notes');
                                   } else {
-                                    showAlertDialog(
-                                      context,
-                                      "Senha incorreta",
-                                      "Tente novamente.");
+                                    showAlertDialog(context, "Senha incorreta",
+                                        "Tente novamente.");
                                   }
                                 } else {
                                   throw Exception(
