@@ -3,22 +3,21 @@ import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLHelper {
   static Future<void> _criaTabelas(sql.Database database) async {
-    await database.execute(
+      await database.execute(
       """CREATE TABLE usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         nome TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
         senha TEXT NOT NULL,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
-
-      CREATE TABLE notas (
+      )""");
+      await database.execute(
+      """CREATE TABLE notas (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         conteudo TEXT NOT NULL,
         usuario INTEGER NOT NULL,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
-      """);
+      )""");
   }
 
   static Future<void> deletarDataBase() async {
@@ -38,9 +37,9 @@ class SQLHelper {
 
 // NOTAS
   static Future<int> adicionarNota(
-      String? nome, String? email, String? senha) async {
+      String? conteudo, int? usuario) async {
     final db = await SQLHelper.db();
-    final dados = {'nome': nome, 'email': email, 'senha': senha};
+    final dados = {'conteudo': conteudo, 'usuario': usuario};
     int id;
     try {
       id = await db.insert('notas', dados,
@@ -51,11 +50,43 @@ class SQLHelper {
     return id;
   }
 
-  static Future<List<Map<String, dynamic>>> pegarNotasDoUsuario(int id) async {
+  static Future<List<Map<String, dynamic>>> pegarNotasDoUsuarioDeHoje(int usuario) async {
     final db = await SQLHelper.db();
-    return db.query('notas', where: "id = ?", whereArgs: [id], limit: 1);
+    final query = await db.query('notas', where: "usuario = ?", whereArgs: [usuario]);
+    List<Map<String, dynamic>> notasDeHoje = [];
+    DateTime hoje = DateTime.now();
+    for (var element in query) {
+      DateTime criacao = DateTime.parse(element['createdAt'].toString());
+      if(criacao.day == hoje.day && criacao.month == hoje.month && criacao.year == hoje.year) {
+        notasDeHoje.add(element);
+      }
+    }
+    return notasDeHoje;
+  }
+
+    static Future<List<Map<String, dynamic>>> pegarNotasDoUsuarioDeUmDia(int usuario, DateTime dia) async {
+    final db = await SQLHelper.db();
+    final query = await db.query('notas', where: "usuario = ?", whereArgs: [usuario]);
+    List<Map<String, dynamic>> notasDoDia = [];
+    for (var element in query) {
+      DateTime criacao = DateTime.parse(element['createdAt'].toString());
+      if(criacao.day == dia.day && criacao.month == dia.month && criacao.year == dia.year) {
+        notasDoDia.add(element);
+      }
+    }
+    return notasDoDia;
+  }
+
+  static Future<List<Map<String, dynamic>>> pegarNotasDoUsuario(int usuario) async {
+    final db = await SQLHelper.db();
+    return db.query('notas', where: "usuario = ?", whereArgs: [usuario]);
   }
   
+    static Future<Map<String, Object?>> pegarUmaNota(int id) async {
+    final db = await SQLHelper.db();
+    return (await db.query('notas', where: "id = ?", whereArgs: [id], limit: 1))[0];
+  }
+
   static Future<int> atualizarNota(int id, String conteudo) async {
     final db = await SQLHelper.db();
 

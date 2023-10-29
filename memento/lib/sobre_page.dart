@@ -40,7 +40,7 @@ class SobrePage extends StatelessWidget {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/notes');
+                Navigator.of(context).pop();
               },
               child: Text('Voltar'),
             ),
