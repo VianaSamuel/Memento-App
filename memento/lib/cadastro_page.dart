@@ -92,7 +92,6 @@ class _CadastroPageState extends State<CadastroPage> {
                               //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
                               onPressed: () async {
                                 int id = await _adicionaUsuario();
-                                print(id);
                                 if (id == -1) {
                                   showAlertDialog(context, "Erro ao criar",
                                       "tente novamente");
@@ -165,15 +164,6 @@ class _CadastroPageState extends State<CadastroPage> {
         : _passwordTextEditingController.text;
     int id = await SQLHelper.adicionarUsuario(nome, email, senha);
     return id;
-  }
-
-  void _apagaUsuario(int id) async {
-    await SQLHelper.apagaUsuario(id);
-  }
-
-  Future<void> _atualizaUsuario(int id) async {
-    await SQLHelper.atualizaUsuario(id, _nameTextEditingController.text,
-        _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 }
 

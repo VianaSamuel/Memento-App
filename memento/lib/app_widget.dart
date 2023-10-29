@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:memento/app_controller.dart';
 import 'package:memento/cadastro_page.dart';
+import 'package:memento/calendar_page.dart';
+import 'package:memento/debug_login.dart';
+import 'package:memento/debug_notes.dart';
 import 'package:memento/home_page.dart';
 import 'package:memento/login_page.dart';
 import 'package:memento/sobre_page.dart';
@@ -27,6 +30,9 @@ class AppWidget extends StatelessWidget {
               '/home': (context) => HomePage(),
               '/notes': (context) => NotesPage(),
               '/sobre': (context) => SobrePage(),
+              '/dbglogin': (context) => DebugLoginPage(),
+              '/dbgnotes': (context) => DebugNotesPage(),
+              '/calendar': (context) => CalendarPage()
             },
           );
         });
