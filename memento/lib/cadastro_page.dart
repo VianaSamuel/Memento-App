@@ -28,7 +28,7 @@ class _CadastroPageState extends State<CadastroPage> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Image.asset(
-                    'assets/images/Logo.jpg',
+                    'assets/images/logo-transparent.png',
                     width: 200,
                     height: 200,
                   ),

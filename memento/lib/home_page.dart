@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Image.asset('assets/images/Logo.jpg'),
+                Image.asset('assets/images/logo-transparent.png'),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Column(

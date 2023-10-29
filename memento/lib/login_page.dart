@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Image.asset(
-                    'assets/images/Logo.jpg',
+                    'assets/images/logo-transparent.png',
                   ),
                   Card(
                     child: Padding(
