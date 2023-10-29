@@ -3,7 +3,7 @@
 # Memento App
 ### Trabalho realizado no 4º período da faculdade.
 <br>
- <img src="memento/assets/logo-round.png" height="250"/>
+ <img src="memento/assets/images/logo-round.png" height="250"/>
  
 </div>
 
