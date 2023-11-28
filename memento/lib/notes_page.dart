@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:memento/app_controller.dart';
-import 'package:memento/login_page.dart';
-import 'package:memento/sql_helper.dart';
+import 'package:memento/servicos/autenticacao_servico.dart';
 
 class NotesPage extends StatefulWidget {
+  const NotesPage({super.key});
+
   @override
   State<NotesPage> createState() {
     return NotesPageState();
@@ -11,108 +14,151 @@ class NotesPage extends StatefulWidget {
 }
 
 class NotesPageState extends State<NotesPage> {
-  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-
   final TextEditingController _conteudoTextEditingController =
       TextEditingController();
 
   final ScrollController _controladorScroll = ScrollController();
 
-  List<Map<String, dynamic>> _notas = [];
+  final List<Map<String, dynamic>> _notas = [];
 
   bool _estaAtualizando = true;
 
-  void _atualizarNotas() async {
-    final data =
-        await SQLHelper.pegarNotasDoUsuarioDeHoje(LoginPage.usuario['id']);
-    setState(() {
-      _notas = data;
-      _estaAtualizando = false;
-    });
-  }
+  final AutenticacaoServico _autenServico = AutenticacaoServico();
 
   @override
   void initState() {
     super.initState();
-    _atualizarNotas();
+    // Ao iniciar o widget, carregue as notas do Firebase
+    _carregarNotasDoFirebase();
   }
 
-  @override
-  void dispose() {
-    _conteudoTextEditingController.dispose();
-    super.dispose();
+  void _carregarNotasDoFirebase() {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users/$userId');
+
+    // Adicione um listener para receber as atualizações do banco de dados
+    ref.onValue.listen((event) {
+      // Limpe a lista existente de notas
+      _notas.clear();
+
+      // Obtenha os dados do snapshot
+      var data = event.snapshot.value;
+
+      // Se houver dados e for do tipo Map, adicione-os à lista de notas
+      if (data is Map) {
+        data.forEach((key, value) {
+          _notas.add({"id": key, "conteudo": value});
+        });
+      }
+
+      setState(() {
+        _estaAtualizando = false;
+      });
+    });
   }
 
-  void _mostraEdicao(int id) async {
-    final notaExistente = _notas.firstWhere((element) => element['id'] == id);
-    _conteudoTextEditingController.text = notaExistente['conteudo'];
+  void _removerNota(String notaId) {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref('users/$userId/$notaId');
+
+    ref.remove();
+    // Atualize a lista local para refletir a remoção
+    _notas.removeWhere((nota) => nota["id"] == notaId);
+  }
+
+  void _mostrarDialogoExclusao(
+      BuildContext context, String notaId, String conteudo) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmação"),
+          content:
+              Text("Tem certeza que deseja apagar essa nota: \"$conteudo\""),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                _removerNota(notaId);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Remover"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editarNota(BuildContext context, String notaId, String conteudo) {
+    TextEditingController _conteudoEditController = TextEditingController();
+    _conteudoEditController.text = conteudo;
+
     showModalBottomSheet(
-        context: context,
-        elevation: 5,
-        isScrollControlled: true,
-        builder: (_) => Container(
-              padding: EdgeInsets.only(
-                top: 15,
-                left: 15,
-                right: 15,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 10,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  TextField(
-                    controller: _conteudoTextEditingController,
-                    decoration:
-                        const InputDecoration(hintText: 'Nome do Produto'),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (_conteudoTextEditingController.text.isEmpty) {
-                        showAlertDialog(
-                            context,
-                            "Não é possivel criar notas vazias",
-                            "Insira um texto em sua nota");
-                      } else {
-                        await _atualizarNota(id);
-                        _conteudoTextEditingController.text = '';
-                      }
-                      _atualizarNotas();
-                      if (!mounted) return;
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Editar nota'),
-                  )
-                ],
-              ),
-            ));
-  }
+      context: context,
+      elevation: 5,
+      isScrollControlled: true,
+      builder: (_) => Container(
+        padding: EdgeInsets.only(
+          top: 15,
+          left: 15,
+          right: 15,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            TextField(
+              controller: _conteudoEditController,
+              decoration: const InputDecoration(hintText: 'Editar Nota'),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (_conteudoEditController.text.isEmpty) {
+                  showAlertDialog(
+                    context,
+                    "Não é possível salvar uma nota vazia",
+                    "Insira um texto na sua nota",
+                  );
+                } else {
+                  // Atualize a nota no banco de dados
+                  String userId = FirebaseAuth.instance.currentUser!.uid;
+                  DatabaseReference ref =
+                      FirebaseDatabase.instance.ref('users/$userId/$notaId');
+                  await ref.set(_conteudoEditController.text);
 
-  Future<void> _adicionarNota() async {
-    await SQLHelper.adicionarNota(
-        _conteudoTextEditingController.text, LoginPage.usuario['id']);
-    _atualizarNotas();
-  }
+                  // Atualize a lista local para refletir a edição
+                  int notaIndex =
+                      _notas.indexWhere((nota) => nota["id"] == notaId);
+                  if (notaIndex != -1) {
+                    setState(() {
+                      _notas[notaIndex]["conteudo"] =
+                          _conteudoEditController.text;
+                    });
+                  }
+                }
 
-  Future<void> _atualizarNota(int id) async {
-    await SQLHelper.atualizarNota(id, _conteudoTextEditingController.text);
-    _atualizarNotas();
-  }
-
-  void _apagarNota(int id) async {
-    await SQLHelper.apagarNota(id);
-    _scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-      content: Text('Nota apagado!'),
-    ));
-    _atualizarNotas();
+                Navigator.of(context).pop(); // Feche o modal
+              },
+              child: const Text('Salvar edição'),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    User? currentUser = FirebaseAuth.instance.currentUser;
     return Scaffold(
         drawer: Drawer(
           child: Scaffold(
@@ -123,8 +169,13 @@ class NotesPageState extends State<NotesPage> {
                     borderRadius: BorderRadius.circular(40),
                     child: const Icon(Icons.person),
                   ),
-                  accountName: Text(LoginPage.usuario['nome']),
-                  accountEmail: Text(LoginPage.usuario['email']),
+                  accountName: currentUser != null
+                      ? Text(currentUser.displayName ?? '')
+                      : const Text(
+                          "Nome do usuario"), //LoginPage.usuario['nome']
+                  accountEmail: currentUser != null
+                      ? Text(currentUser.email ?? '')
+                      : const Text("Email"), //LoginPage.usuario['email']
                 ),
                 ListTile(
                   leading: const Icon(Icons.calendar_month),
@@ -146,6 +197,8 @@ class NotesPageState extends State<NotesPage> {
                   title: const Text('Sair'),
                   subtitle: const Text('Finalizar sessao'),
                   onTap: () {
+                    _autenServico.deslogar();
+                    //DebugAuth().authStateChanges(); // Este metodo verfica se o usuario esta logado
                     // deslogar usuario
                     Navigator.of(context).pushReplacementNamed('/home');
                   },
@@ -175,7 +228,7 @@ class NotesPageState extends State<NotesPage> {
               )
             : ListView.builder(
                 controller: _controladorScroll,
-                padding: const EdgeInsets.only(bottom:100),
+                padding: const EdgeInsets.only(bottom: 100),
                 shrinkWrap: true,
                 itemCount: _notas.length,
                 itemBuilder: (context, index) => Card(
@@ -199,36 +252,22 @@ class NotesPageState extends State<NotesPage> {
                                 IconButton(
                                   icon: const Icon(Icons.delete),
                                   onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text("Confirmação"),
-                                          content: Text(
-                                              "Tem certeza que deseja apagar essa nota: \"${_notas[index]['conteudo']}\""),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
-                                                child: const Text("Cancelar")),
-                                            TextButton(
-                                                onPressed: () {
-                                                  _apagarNota(
-                                                      _notas[index]['id']);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: const Text("Remover")),
-                                          ],
-                                        );
-                                      },
+                                    _mostrarDialogoExclusao(
+                                      context,
+                                      _notas[index]['id'],
+                                      _notas[index]['conteudo'],
                                     );
                                   },
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () =>
-                                      _mostraEdicao(_notas[index]['id']),
-                                ),
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () {
+                                      _editarNota(
+                                        context,
+                                        _notas[index]['id'],
+                                        _notas[index]['conteudo'],
+                                      );
+                                    }),
                               ],
                             )
                           ],
@@ -238,49 +277,50 @@ class NotesPageState extends State<NotesPage> {
                   ),
                 ),
               ),
-        floatingActionButton:
-        Padding( padding: const EdgeInsets.fromLTRB(30,0,0,0),
-          child:
-        Material(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-          elevation: 1,
-          child: Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10,0,0,10),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                        labelText: 'Nota',
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)),
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black))),
-                    controller: _conteudoTextEditingController,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+          child: Material(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            elevation: 1,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                    child: TextField(
+                      decoration: const InputDecoration(
+                          labelText: 'Nota',
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black))),
+                      controller: _conteudoTextEditingController,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              FloatingActionButton.small(
-                child: const Icon(
-                  Icons.add,
-                  size: 30,
-                  color: Colors.black,
+                const SizedBox(width: 10),
+                FloatingActionButton.small(
+                  child: const Icon(
+                    Icons.add,
+                    size: 30,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    String userId = currentUser!.uid;
+                    DatabaseReference ref =
+                        FirebaseDatabase.instance.ref('users/$userId');
+                    DatabaseReference newPostRef = ref.push();
+                    String notaTexto = _conteudoTextEditingController.text;
+                    newPostRef.set(notaTexto);
+
+                    _conteudoTextEditingController.clear();
+                  },
                 ),
-                onPressed: () {
-                  if (_conteudoTextEditingController.text.isNotEmpty) {
-                    _adicionarNota();
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    _controladorScroll.jumpTo(_controladorScroll.position.maxScrollExtent - 150);
-                  }
-                  _conteudoTextEditingController.clear();
-                },
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        )
-        );
+        ));
   }
 }
 

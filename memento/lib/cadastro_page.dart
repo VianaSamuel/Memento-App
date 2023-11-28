@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'sql_helper.dart';
+import 'package:memento/meu_snackbar.dart';
+import 'package:memento/servicos/autenticacao_servico.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
@@ -15,6 +16,9 @@ class _CadastroPageState extends State<CadastroPage> {
       TextEditingController();
   final TextEditingController _nameTextEditingController =
       TextEditingController();
+
+  final AutenticacaoServico _autenServico = AutenticacaoServico();
+
   // se for salvar o endereco -> final TextEditingController _enderecoTextEditingController = TextEditingController();
 
   Widget _body() {
@@ -53,32 +57,6 @@ class _CadastroPageState extends State<CadastroPage> {
                                 labelText: 'Email',
                                 border: OutlineInputBorder()),
                           ),
-                          /*
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  onChanged: (text) {},
-                                  obscureText: true,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Endereço',
-                                      border: OutlineInputBorder()),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  onChanged: (text) {},
-                                  obscureText: true,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Endereço',
-                                      border: OutlineInputBorder()),
-                                ),
-                              ),
-                            ],
-                          ),
-                          */
                           const SizedBox(height: 10),
                           TextField(
                             controller: _passwordTextEditingController,
@@ -91,14 +69,29 @@ class _CadastroPageState extends State<CadastroPage> {
                           ElevatedButton(
                               //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
                               onPressed: () async {
-                                int id = await _adicionaUsuario();
-                                if (id == -1) {
-                                  showAlertDialog(context, "Erro ao criar",
-                                      "tente novamente");
-                                } else {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('/login');
-                                }
+                                String nome = _nameTextEditingController.text;
+                                String email = _emailTextEditingController.text;
+                                String senha =
+                                    _passwordTextEditingController.text;
+                                _autenServico
+                                    .cadastrarUsuario(
+                                        nome: nome, senha: senha, email: email)
+                                    .then(
+                                  (String? erro) {
+                                    if (erro != null) {
+                                      mostrarSnackBar(
+                                          context: context, texto: erro);
+                                    } else {
+                                      mostrarSnackBar(
+                                          context: context,
+                                          texto:
+                                              "Cadastrado efetuado com sucesso",
+                                          isErro: false);
+                                      Navigator.of(context)
+                                          .pushReplacementNamed('/login');
+                                    }
+                                  },
+                                );
                               },
                               child: Container(
                                   width: double
@@ -127,9 +120,6 @@ class _CadastroPageState extends State<CadastroPage> {
                               ),
                             ],
                           ),
-                          Row(
-                            children: [Text('')],
-                          )
                         ],
                       ),
                     ),
@@ -151,45 +141,4 @@ class _CadastroPageState extends State<CadastroPage> {
       ],
     ));
   }
-
-  Future<int> _adicionaUsuario() async {
-    String? nome = (_nameTextEditingController.text.isEmpty)
-        ? null
-        : _nameTextEditingController.text;
-    String? email = (_emailTextEditingController.text.isEmpty)
-        ? null
-        : _emailTextEditingController.text;
-    String? senha = (_passwordTextEditingController.text.isEmpty)
-        ? null
-        : _passwordTextEditingController.text;
-    int id = await SQLHelper.adicionarUsuario(nome, email, senha);
-    return id;
-  }
-}
-
-showAlertDialog(BuildContext context, String titulo, String content) {
-  // set up the button
-  Widget okButton = TextButton(
-    child: const Text("OK"),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text(titulo),
-    content: Text(content),
-    actions: [
-      okButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
 }
