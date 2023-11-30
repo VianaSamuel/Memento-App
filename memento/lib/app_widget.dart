@@ -20,7 +20,7 @@ class AppWidget extends StatelessWidget {
             home: RoteadorTela(),
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              primarySwatch: Colors.grey,
+              primarySwatch: Colors.teal,
               brightness: AppControler.instance.isDartTheme
                   ? Brightness.dark
                   : Brightness.light,

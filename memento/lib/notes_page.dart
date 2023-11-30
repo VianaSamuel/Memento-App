@@ -25,6 +25,8 @@ class NotesPageState extends State<NotesPage> {
 
   final AutenticacaoServico _autenServico = AutenticacaoServico();
 
+  final DateTime dataAtual = DateTime.now();
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +36,10 @@ class NotesPageState extends State<NotesPage> {
 
   void _carregarNotasDoFirebase() {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    DatabaseReference ref = FirebaseDatabase.instance.ref('users/$userId');
+    String formattedDate =
+        "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref('users/$userId/$formattedDate');
 
     // Adicione um listener para receber as atualizações do banco de dados
     ref.onValue.listen((event) {
@@ -59,8 +64,10 @@ class NotesPageState extends State<NotesPage> {
 
   void _removerNota(String notaId) {
     String userId = FirebaseAuth.instance.currentUser!.uid;
+    String formattedDate =
+        "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
     DatabaseReference ref =
-        FirebaseDatabase.instance.ref('users/$userId/$notaId');
+        FirebaseDatabase.instance.ref('users/$userId/$formattedDate/$notaId');
 
     ref.remove();
     // Atualize a lista local para refletir a remoção
@@ -131,8 +138,10 @@ class NotesPageState extends State<NotesPage> {
                 } else {
                   // Atualize a nota no banco de dados
                   String userId = FirebaseAuth.instance.currentUser!.uid;
-                  DatabaseReference ref =
-                      FirebaseDatabase.instance.ref('users/$userId/$notaId');
+                  String formattedDate =
+                      "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
+                  DatabaseReference ref = FirebaseDatabase.instance
+                      .ref('users/$userId/$formattedDate/$notaId');
                   await ref.set(_conteudoEditController.text);
 
                   // Atualize a lista local para refletir a edição
@@ -178,7 +187,10 @@ class NotesPageState extends State<NotesPage> {
                       : const Text("Email"), //LoginPage.usuario['email']
                 ),
                 ListTile(
-                  leading: const Icon(Icons.calendar_month),
+                  leading: const Icon(
+                    Icons.calendar_month,
+                    color: Colors.teal,
+                  ),
                   title: const Text('Calendário'),
                   subtitle: const Text('Acessar notas antigas'),
                   onTap: () {
@@ -187,13 +199,16 @@ class NotesPageState extends State<NotesPage> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.groups),
-                  title: const Text('Sobre nos'),
+                  title: const Text('Sobre nós'),
                   onTap: () {
                     Navigator.of(context).pushNamed('/sobre');
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.exit_to_app),
+                  leading: const Icon(
+                    Icons.exit_to_app,
+                    color: Colors.red,
+                  ),
                   title: const Text('Sair'),
                   subtitle: const Text('Finalizar sessao'),
                   onTap: () {
@@ -308,8 +323,10 @@ class NotesPageState extends State<NotesPage> {
                   ),
                   onPressed: () {
                     String userId = currentUser!.uid;
-                    DatabaseReference ref =
-                        FirebaseDatabase.instance.ref('users/$userId');
+                    String formattedDate =
+                        "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
+                    DatabaseReference ref = FirebaseDatabase.instance
+                        .ref('users/$userId/$formattedDate');
                     DatabaseReference newPostRef = ref.push();
                     String notaTexto = _conteudoTextEditingController.text;
                     newPostRef.set(notaTexto);
