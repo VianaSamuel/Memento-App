@@ -109,57 +109,107 @@ class NotesPageState extends State<NotesPage> {
       context: context,
       elevation: 5,
       isScrollControlled: true,
-      builder: (_) => Container(
-        padding: EdgeInsets.only(
-          top: 15,
-          left: 15,
-          right: 15,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+      builder: (_) => Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Editando sua nota...',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // Cor de fundo da barra de aplicativos
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextField(
-              controller: _conteudoEditController,
-              decoration: const InputDecoration(hintText: 'Editar Nota'),
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Conteúdo da nota antiga:',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.teal,
+                  // Cor do texto
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                _conteudoEditController.text,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Color.fromARGB(221, 55, 54, 54), // Cor do texto
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+          child: Material(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
             ),
-            const SizedBox(
-              height: 20,
+            elevation: 1,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Editar Nota',
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.teal),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.teal),
+                        ),
+                      ),
+                      controller: _conteudoEditController,
+                    ),
+                  ),
+                ),
+                FloatingActionButton.small(
+                  child: const Icon(
+                    Icons.edit,
+                    size: 30,
+                    color: Colors.black,
+                  ), // Cor de fundo do botão
+                  onPressed: () async {
+                    if (_conteudoEditController.text.isEmpty) {
+                      showAlertDialog(
+                        context,
+                        "Não é possível salvar uma nota vazia",
+                        "Insira um texto na sua nota",
+                      );
+                    } else {
+                      // Atualize a nota no banco de dados
+                      String userId = FirebaseAuth.instance.currentUser!.uid;
+                      String formattedDate =
+                          "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
+                      DatabaseReference ref = FirebaseDatabase.instance
+                          .ref('users/$userId/$formattedDate/$notaId');
+                      await ref.set(_conteudoEditController.text);
+
+                      // Atualize a lista local para refletir a edição
+                      int notaIndex =
+                          _notas.indexWhere((nota) => nota["id"] == notaId);
+                      if (notaIndex != -1) {
+                        setState(() {
+                          _notas[notaIndex]["conteudo"] =
+                              _conteudoEditController.text;
+                        });
+                      }
+                    }
+
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () async {
-                if (_conteudoEditController.text.isEmpty) {
-                  showAlertDialog(
-                    context,
-                    "Não é possível salvar uma nota vazia",
-                    "Insira um texto na sua nota",
-                  );
-                } else {
-                  // Atualize a nota no banco de dados
-                  String userId = FirebaseAuth.instance.currentUser!.uid;
-                  String formattedDate =
-                      "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
-                  DatabaseReference ref = FirebaseDatabase.instance
-                      .ref('users/$userId/$formattedDate/$notaId');
-                  await ref.set(_conteudoEditController.text);
-
-                  // Atualize a lista local para refletir a edição
-                  int notaIndex =
-                      _notas.indexWhere((nota) => nota["id"] == notaId);
-                  if (notaIndex != -1) {
-                    setState(() {
-                      _notas[notaIndex]["conteudo"] =
-                          _conteudoEditController.text;
-                    });
-                  }
-                }
-
-                Navigator.of(context).pop(); // Feche o modal
-              },
-              child: const Text('Salvar edição'),
-            )
-          ],
+          ),
         ),
       ),
     );
@@ -322,16 +372,24 @@ class NotesPageState extends State<NotesPage> {
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    String userId = currentUser!.uid;
-                    String formattedDate =
-                        "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
-                    DatabaseReference ref = FirebaseDatabase.instance
-                        .ref('users/$userId/$formattedDate');
-                    DatabaseReference newPostRef = ref.push();
-                    String notaTexto = _conteudoTextEditingController.text;
-                    newPostRef.set(notaTexto);
+                    if (_conteudoTextEditingController.text.isEmpty) {
+                      showAlertDialog(
+                        context,
+                        "Não é possível adicionar uma nota vazia",
+                        "Insira um texto na sua nota",
+                      );
+                    } else {
+                      String userId = currentUser!.uid;
+                      String formattedDate =
+                          "${dataAtual.day}:${dataAtual.month}:${dataAtual.year}";
+                      DatabaseReference ref = FirebaseDatabase.instance
+                          .ref('users/$userId/$formattedDate');
+                      DatabaseReference newPostRef = ref.push();
+                      String notaTexto = _conteudoTextEditingController.text;
+                      newPostRef.set(notaTexto);
 
-                    _conteudoTextEditingController.clear();
+                      _conteudoTextEditingController.clear();
+                    }
                   },
                 ),
               ],

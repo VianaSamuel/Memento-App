@@ -16,7 +16,6 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPage extends State<CalendarPage> {
   final AutenticacaoServico _autenServico = AutenticacaoServico();
-  final ScrollController _controladorScroll = ScrollController();
   final List<Map<String, dynamic>> _notas = [];
 
   @override
