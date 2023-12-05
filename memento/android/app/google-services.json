@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "128196352432",
+    "firebase_url": "https://mementofirebase-3cfad-default-rtdb.firebaseio.com",
+    "project_id": "mementofirebase-3cfad",
+    "storage_bucket": "mementofirebase-3cfad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128196352432:android:cea37c063c03e3e34ade75",
+        "android_client_info": {
+          "package_name": "com.example.memento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqkUHaMJNz8IFqf7wT1xhONW8lh-fkrCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

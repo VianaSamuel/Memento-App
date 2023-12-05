@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:memento/sql_helper.dart';
+import 'package:memento/meu_snackbar.dart';
+import 'package:memento/servicos/autenticacao_servico.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
       TextEditingController();
   final TextEditingController _passwordTextEditingController =
       TextEditingController();
+  final AutenticacaoServico _autenServico = AutenticacaoServico();
 
   Widget _body() {
     return Scaffold(
@@ -54,29 +56,20 @@ class _LoginPageState extends State<LoginPage> {
                           ElevatedButton(
                               //style: ElevatedButton.styleFrom( foregroundColor: Colors.black,backgroundColor: Colors.blue) // Para mudar a cor do botao
                               onPressed: () async {
-                                final data =
-                                    await SQLHelper.pegaUmUsuarioPeloEmail(
-                                        _emailTextEditingController.text);
-                                if (data.length == 0) {
-                                  showAlertDialog(
-                                      context,
-                                      "Usuário não encontrado",
-                                      "Nenhum usuario com esse email, tente novamente.");
-                                } else if (data.length == 1) {
-                                  if (data[0]['senha'] ==
-                                      _passwordTextEditingController.text) {
-                                    LoginPage.usuario = data[0];
+                                String email = _emailTextEditingController.text;
+                                String senha =
+                                    _passwordTextEditingController.text;
+                                _autenServico
+                                    .logarUsuarios(email: email, senha: senha)
+                                    .then((String? erro) {
+                                  if (erro != null) {
+                                    mostrarSnackBar(
+                                        context: context, texto: erro);
+                                  } else {
                                     Navigator.of(context)
                                         .pushReplacementNamed('/notes');
-                                  } else {
-                                    showAlertDialog(context, "Senha incorreta",
-                                        "Tente novamente.");
                                   }
-                                } else {
-                                  throw Exception(
-                                      "Mais de um usuario com o mesmo email");
-                                }
-                                //Navigator.of(context).pushReplacementNamed('/notes');
+                                });
                               },
                               child: Container(
                                   width: double
